@@ -4,6 +4,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +37,9 @@ public class JavaScriptFramework {
 
 	@Column
 	private ZonedDateTime deprecationDate;
+
+	@Enumerated(EnumType.ORDINAL)
+	private FanaticIrrationalAdmirationLevel hypeLevel;
 
 	public JavaScriptFramework() {
 	}
@@ -73,6 +78,14 @@ public class JavaScriptFramework {
 
 	public void setDeprecationDate(ZonedDateTime deprecationDate) {
 		this.deprecationDate = deprecationDate;
+	}
+
+	public FanaticIrrationalAdmirationLevel getHypeLevel() {
+		return hypeLevel;
+	}
+
+	public void setHypeLevel(FanaticIrrationalAdmirationLevel hypeLevel) {
+		this.hypeLevel = hypeLevel;
 	}
 
 	@Override
