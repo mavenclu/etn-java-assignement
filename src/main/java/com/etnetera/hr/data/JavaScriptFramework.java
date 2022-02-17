@@ -1,10 +1,13 @@
 package com.etnetera.hr.data;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple data entity describing basic properties of every JavaScript framework.
@@ -21,6 +24,9 @@ public class JavaScriptFramework {
 
 	@Column(nullable = false, length = 30)
 	private String name;
+
+	@ElementCollection
+	private List<String> version = new ArrayList<>();
 
 	public JavaScriptFramework() {
 	}
@@ -43,6 +49,14 @@ public class JavaScriptFramework {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<String> getVersion() {
+		return version;
+	}
+
+	public void setVersion(List<String> version) {
+		this.version = version;
 	}
 
 	@Override
