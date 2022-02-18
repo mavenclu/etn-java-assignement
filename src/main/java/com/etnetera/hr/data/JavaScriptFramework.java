@@ -1,6 +1,5 @@
 package com.etnetera.hr.data;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -9,88 +8,84 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Simple data entity describing basic properties of every JavaScript framework.
- * 
- * @author Etnetera
  *
+ * @author Etnetera
  */
 @Entity
 public class JavaScriptFramework {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	@Column(nullable = false, length = 30)
-	private String name;
+    @Column(nullable = false, length = 30)
+    private String name;
 
-	@ElementCollection
-	private List<String> version = new ArrayList<>();
+    @ElementCollection
+    private List<String> version = new ArrayList<>();
 
-	@Column
-	private ZonedDateTime deprecationDate;
+    @Column
+    private ZonedDateTime deprecationDate;
 
-	@Enumerated(EnumType.ORDINAL)
-	private FanaticIrrationalAdmirationLevel hypeLevel;
+    @Enumerated(EnumType.ORDINAL)
+    private FanaticIrrationalAdmirationLevel hypeLevel;
 
-	public JavaScriptFramework() {
-	}
+    public JavaScriptFramework() {
+    }
 
-	public JavaScriptFramework(String name) {
-		this.name = name;
-	}
+    public JavaScriptFramework(String name) {
+        this.name = name;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<String> getVersion() {
-		return version;
-	}
+    public List<String> getVersion() {
+        return version;
+    }
 
-	public void setVersion(List<String> version) {
-		this.version = version;
-	}
+    public void setVersion(List<String> version) {
+        this.version = version;
+    }
 
-	public ZonedDateTime getDeprecationDate() {
-		return deprecationDate;
-	}
+    public ZonedDateTime getDeprecationDate() {
+        return deprecationDate;
+    }
 
-	public void setDeprecationDate(ZonedDateTime deprecationDate) {
-		this.deprecationDate = deprecationDate;
-	}
+    public void setDeprecationDate(ZonedDateTime deprecationDate) {
+        this.deprecationDate = deprecationDate;
+    }
 
-	public FanaticIrrationalAdmirationLevel getHypeLevel() {
-		return hypeLevel;
-	}
+    public FanaticIrrationalAdmirationLevel getHypeLevel() {
+        return hypeLevel;
+    }
 
-	public void setHypeLevel(FanaticIrrationalAdmirationLevel hypeLevel) {
-		this.hypeLevel = hypeLevel;
-	}
+    public void setHypeLevel(FanaticIrrationalAdmirationLevel hypeLevel) {
+        this.hypeLevel = hypeLevel;
+    }
 
-	@Override
-	public String toString() {
-		return "JavaScriptFramework [id=" + id + ", name=" + name + "]";
-	}
+    @Override
+    public String toString() {
+        return "JavaScriptFramework [id=" + id + ", name=" + name + "]";
+    }
 
 }

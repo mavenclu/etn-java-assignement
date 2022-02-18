@@ -8,6 +8,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.etnetera.hr.dto.JavaScriptFrameworkRequestDto;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +49,11 @@ public class JavaScriptFrameworkTests {
 	@Autowired
 	private JavaScriptFrameworkRepository repository;
 
+	@After
+	public void tearDown(){
+		repository.deleteAll();
+	}
+
 	private void prepareData() throws Exception {
 		JavaScriptFramework react = new JavaScriptFramework("ReactJS");
 		JavaScriptFramework vue = new JavaScriptFramework("Vue.js");
@@ -57,9 +68,9 @@ public class JavaScriptFrameworkTests {
 
 		mockMvc.perform(get("/frameworks")).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
 				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].id", is(2)))
 				.andExpect(jsonPath("$[0].name", is("ReactJS")))
-				.andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].id", is(3)))
 				.andExpect(jsonPath("$[1].name", is("Vue.js")));
 	}
 	
@@ -80,5 +91,24 @@ public class JavaScriptFrameworkTests {
 			.andExpect(jsonPath("$.errors[0].message", is("Size")));
 		
 	}
-	
+
+	@Test
+	public void addFramework_whenValdiName_thenStatusCreated() throws Exception {
+		JavaScriptFramework framework = new JavaScriptFramework(RandomStringUtils.randomAlphabetic(6));
+		mockMvc.perform(post("/frameworks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(framework)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.errors", hasSize(0)));
+
+	}
+
+
+	@Test
+	public void addFramework_whenValdiName_thenNumberOfFrameworksIncreases() throws Exception {
+		long numbOfFrameworks = repository.count();
+		JavaScriptFramework framework = new JavaScriptFramework(RandomStringUtils.randomAlphabetic(7));
+		mockMvc.perform(post("/frameworks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(framework)))
+				.andExpect(status().isCreated());
+		Assert.assertEquals(numbOfFrameworks + 1, repository.count());
+
+	}
 }
