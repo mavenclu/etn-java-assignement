@@ -10,4 +10,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface JavaScriptFrameworkRepository extends CrudRepository<JavaScriptFramework, Long> {
 
+    Iterable<JavaScriptFramework> findAllByArchivedFalse();
+
+    Iterable<JavaScriptFramework> findAllByNameContaining(String nameLike);
 }

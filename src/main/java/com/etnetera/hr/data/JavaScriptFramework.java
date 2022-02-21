@@ -1,5 +1,6 @@
 package com.etnetera.hr.data;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -8,7 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +31,13 @@ public class JavaScriptFramework {
     @ElementCollection
     private List<String> version = new ArrayList<>();
 
-    @Column
-    private ZonedDateTime deprecationDate;
+    @Basic
+    private LocalDate deprecationDate;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private FanaticIrrationalAdmirationLevel hypeLevel;
+
+    private boolean archived;
 
     public JavaScriptFramework() {
     }
@@ -67,11 +70,11 @@ public class JavaScriptFramework {
         this.version = version;
     }
 
-    public ZonedDateTime getDeprecationDate() {
+    public LocalDate getDeprecationDate() {
         return deprecationDate;
     }
 
-    public void setDeprecationDate(ZonedDateTime deprecationDate) {
+    public void setDeprecationDate(LocalDate deprecationDate) {
         this.deprecationDate = deprecationDate;
     }
 
@@ -81,6 +84,14 @@ public class JavaScriptFramework {
 
     public void setHypeLevel(FanaticIrrationalAdmirationLevel hypeLevel) {
         this.hypeLevel = hypeLevel;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
     @Override
