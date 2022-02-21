@@ -5,6 +5,10 @@ import com.etnetera.hr.dto.JSFrameworkRequestDto;
 import com.etnetera.hr.dto.JSFrameworkResponseDto;
 import com.etnetera.hr.rest.Errors;
 import com.etnetera.hr.service.JavaScriptFrameworkService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Etnetera
  */
 @RestController
+@Tag(name = "frameworks", description = "JS Framework API")
 public class JavaScriptFrameworkController extends EtnRestController {
 
     private final JavaScriptFrameworkService frameworkService;
@@ -47,6 +52,15 @@ public class JavaScriptFrameworkController extends EtnRestController {
         }
     }
 
+    @Operation(
+            summary = "Edit existent framework", description = "Update framework",
+            tags = {"frameworks"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Framework was updated"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+
+    })
     @PutMapping("/frameworks/{id}")
     public ResponseEntity<Errors> editFramework(@PathVariable Long id, @RequestBody JSFrameworkRequestDto framework) {
         Errors errors = frameworkService.editFramework(id, framework);

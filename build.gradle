@@ -24,6 +24,10 @@ dependencies {
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 
 	compile 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.1.12'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
+
 
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

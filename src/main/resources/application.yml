@@ -1,0 +1,9 @@
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /api-docs-ui.html
+
+application:
+  description: API for managing JavaScript Frameworks
+  version: v0.0.1
