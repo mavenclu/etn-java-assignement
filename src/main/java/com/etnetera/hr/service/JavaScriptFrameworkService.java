@@ -5,8 +5,6 @@ import com.etnetera.hr.dto.JSFrameworkRequestDto;
 import com.etnetera.hr.dto.JSFrameworkResponseDto;
 import com.etnetera.hr.mapper.JavaScriptFrameworkMapper;
 import com.etnetera.hr.repository.JavaScriptFrameworkRepository;
-import com.etnetera.hr.rest.Errors;
-import com.etnetera.hr.rest.ValidationError;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,12 +14,10 @@ import java.util.List;
 public class JavaScriptFrameworkService {
     private final JavaScriptFrameworkRepository frameworkRepository;
     private final JavaScriptFrameworkMapper frameworkMapper;
-    private final ValidationService validationService;
 
-    public JavaScriptFrameworkService(JavaScriptFrameworkRepository frameworkRepository, JavaScriptFrameworkMapper frameworkMapper, ValidationService validationService) {
+    public JavaScriptFrameworkService(JavaScriptFrameworkRepository frameworkRepository, JavaScriptFrameworkMapper frameworkMapper) {
         this.frameworkRepository = frameworkRepository;
         this.frameworkMapper = frameworkMapper;
-        this.validationService = validationService;
     }
 
     public Iterable<JavaScriptFramework> findAll() {
@@ -29,57 +25,24 @@ public class JavaScriptFrameworkService {
     }
 
 
-    public JavaScriptFramework addNew(JSFrameworkRequestDto newFramework) {
+    public JSFrameworkResponseDto addNew(JSFrameworkRequestDto newFramework) {
         JavaScriptFramework framework = frameworkMapper.jSFrameworkDtoToJavaScriptFramework(newFramework);
-        return frameworkRepository.save(framework);
+        JavaScriptFramework saved = frameworkRepository.save(framework);
+        return frameworkMapper.mapToResponseDto(saved);
     }
 
-    public Errors addNewFramework(JSFrameworkRequestDto dto) {
-        Errors errors = new Errors();
-        List<ValidationError> validationErrors;
-        if (!validationService.validateName(dto).isEmpty()) {
-            validationErrors = validationService.validateName(dto);
-        } else {
-            JavaScriptFramework framework = frameworkMapper.jSFrameworkDtoToJavaScriptFramework(dto);
-            frameworkRepository.save(framework);
-            validationErrors = new ArrayList<>();
-        }
-        errors.setErrors(validationErrors);
-        return errors;
+
+    public JSFrameworkResponseDto editFramework(Long id, JSFrameworkRequestDto dto) {
+        JavaScriptFramework framework = frameworkRepository.findById(id).orElseThrow();
+        frameworkMapper.updateJavaScriptFrameworkFromDto(dto, framework);
+        frameworkRepository.save(framework);
+        return frameworkMapper.mapToResponseDto(framework);
     }
 
-    public Errors editFramework(Long id, JSFrameworkRequestDto dto) {
-        Errors errors = new Errors();
-        List<ValidationError> validationErrors;
-
-        if (!validationService.validateExistence(id).isEmpty()) {
-            validationErrors = validationService.validateExistence(id);
-        } else if (!validationService.validateName(dto).isEmpty()) {
-            validationErrors = validationService.validateName(dto);
-        } else {
-            JavaScriptFramework framework = frameworkRepository.findById(id).orElseThrow();
-            frameworkMapper.updateJavaScriptFrameworkFromDto(dto, framework);
-            frameworkRepository.save(framework);
-            validationErrors = new ArrayList<>();
-        }
-        errors.setErrors(validationErrors);
-        return errors;
-    }
-
-    public Errors delete(Long id) {
-        Errors errors = new Errors();
-        List<ValidationError> validationErrors;
-
-        if (!validationService.validateExistence(id).isEmpty()) {
-            validationErrors = validationService.validateExistence(id);
-        } else {
-            JavaScriptFramework framework = frameworkRepository.findById(id).orElseThrow();
-            framework.setArchived(true);
-            frameworkRepository.save(framework);
-            validationErrors = new ArrayList<>();
-        }
-        errors.setErrors(validationErrors);
-        return errors;
+    public void delete(Long id) {
+        JavaScriptFramework framework = frameworkRepository.findById(id).orElseThrow();
+        framework.setArchived(true);
+        frameworkRepository.save(framework);
     }
 
     public Iterable<JSFrameworkResponseDto> searchForFramework(String name) {

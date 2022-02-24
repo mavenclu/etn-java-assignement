@@ -5,11 +5,8 @@ import com.etnetera.hr.data.JavaScriptFramework;
 import com.etnetera.hr.dto.JSFrameworkRequestDto;
 import com.etnetera.hr.repository.JavaScriptFrameworkRepository;
 import com.etnetera.hr.service.JavaScriptFrameworkService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +17,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,11 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JavaScriptFrameworkTests {
 
+    private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     @Autowired
     private JavaScriptFrameworkRepository repository;
     @Autowired
@@ -68,10 +66,10 @@ public class JavaScriptFrameworkTests {
 
         mockMvc.perform(get("/frameworks")).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].id", is(1)))
-				.andExpect(jsonPath("$[0].name", is("ReactJS")))
-				.andExpect(jsonPath("$[1].id", is(2)))
-				.andExpect(jsonPath("$[1].name", is("Vue.js")))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].name", is("ReactJS")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].name", is("Vue.js")))
         ;
     }
 
@@ -109,7 +107,7 @@ public class JavaScriptFrameworkTests {
         JavaScriptFramework framework = new JavaScriptFramework(RandomStringUtils.randomAlphabetic(7));
         mockMvc.perform(post("/frameworks").contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsBytes(framework)))
                 .andExpect(status().isCreated());
-        Assert.assertEquals(numbOfFrameworks + 1, repository.count());
+        assertEquals(numbOfFrameworks + 1, repository.count());
 
     }
 
@@ -121,7 +119,7 @@ public class JavaScriptFrameworkTests {
                         "/frameworks/1001")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsBytes(framework)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors[0].field", is("id")))
                 .andExpect(jsonPath("$.errors[0].message", is("NotFound")));
@@ -160,8 +158,8 @@ public class JavaScriptFrameworkTests {
                         .content(mapper.writeValueAsBytes(framework)))
                 .andExpect(status().isOk());
         oldFramework = repository.findById(oldFramework.getId()).orElseThrow();
-        Assert.assertEquals("check name was updated", framework.getName(), oldFramework.getName());
-        Assert.assertEquals("check admiration level was updated", FanaticIrrationalAdmirationLevel.ADORE, oldFramework.getHypeLevel());
+        assertEquals("check name was updated", framework.getName(), oldFramework.getName());
+        assertEquals("check admiration level was updated", FanaticIrrationalAdmirationLevel.ADORE, oldFramework.getHypeLevel());
     }
 
 
@@ -172,19 +170,21 @@ public class JavaScriptFrameworkTests {
         Long id = repository.findAll().iterator().next().getId();
 
         mockMvc.perform(delete("/frameworks/" + id.toString()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
         long newNumbOfFrameworks = StreamSupport.stream(repository.findAllByArchivedFalse().spliterator(), false).count();
-        Assert.assertEquals(numbOfFrameworks - 1, newNumbOfFrameworks);
+        assertEquals(numbOfFrameworks - 1, newNumbOfFrameworks);
 
     }
 
     @Test
     public void deleteFramework_whenInvalidId_thenBadRequest() throws Exception {
         mockMvc.perform(delete("/frameworks/123"))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoSuchElementException))
                 .andExpect(jsonPath("$.errors", hasSize(1)))
                 .andExpect(jsonPath("$.errors[0].field", is("id")))
                 .andExpect(jsonPath("$.errors[0].message", is("NotFound")));
+
     }
 
     @Test
