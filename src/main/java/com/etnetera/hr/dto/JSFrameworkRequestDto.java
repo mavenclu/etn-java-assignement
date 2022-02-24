@@ -1,6 +1,7 @@
 package com.etnetera.hr.dto;
 
 import com.etnetera.hr.data.FanaticIrrationalAdmirationLevel;
+import com.etnetera.hr.data.Version;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,7 @@ public class JSFrameworkRequestDto {
     @Size(max = 30, message = "Size")
     private String name;
     @Schema(name = "version", description = "available versions of the framework")
-    private List<String> version = new ArrayList<>();
-    @Schema(name = "depricationDate", description = "deprication date, in case the framework is depricated")
-    private LocalDate deprecationDate;
+    private List<Version> versions = new ArrayList<>();
     @Schema(name = "hyepLevel", description = "current level of admiration of the framework")
     private FanaticIrrationalAdmirationLevel hypeLevel;
 

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-//@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JavaScriptFrameworkTests {
 
     @Autowired
@@ -52,11 +53,6 @@ public class JavaScriptFrameworkTests {
     private JavaScriptFrameworkRepository repository;
     @Autowired
     private JavaScriptFrameworkService service;
-
-    @After
-    public void tearDown() {
-        repository.deleteAll();
-    }
 
     private void prepareData() throws Exception {
         JavaScriptFramework react = new JavaScriptFramework("ReactJS");
@@ -72,10 +68,10 @@ public class JavaScriptFrameworkTests {
 
         mockMvc.perform(get("/frameworks")).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
-//				.andExpect(jsonPath("$[0].id", is(2)))
-//				.andExpect(jsonPath("$[0].name", is("ReactJS")))
-//				.andExpect(jsonPath("$[1].id", is(3)))
-//				.andExpect(jsonPath("$[1].name", is("Vue.js")))
+				.andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].name", is("ReactJS")))
+				.andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].name", is("Vue.js")))
         ;
     }
 
