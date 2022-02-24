@@ -16,6 +16,8 @@ public class Version {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String versionNumber;
+
     @Basic
     private LocalDate deprecationDate;
 }
