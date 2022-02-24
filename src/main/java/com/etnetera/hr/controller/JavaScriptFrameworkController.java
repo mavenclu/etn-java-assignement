@@ -54,15 +54,14 @@ public class JavaScriptFrameworkController extends EtnRestController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Framework was updated"),
-            @ApiResponse(responseCode = "400", description = "Bad request")
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found")
 
     })
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/frameworks/{id}")
     public JSFrameworkResponseDto editFramework(@PathVariable Long id, @Valid @RequestBody JSFrameworkRequestDto framework) {
-
         return frameworkService.editFramework(id, framework);
-
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
