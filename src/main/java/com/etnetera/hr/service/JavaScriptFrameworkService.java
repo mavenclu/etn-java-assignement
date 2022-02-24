@@ -5,8 +5,10 @@ import com.etnetera.hr.dto.JSFrameworkRequestDto;
 import com.etnetera.hr.dto.JSFrameworkResponseDto;
 import com.etnetera.hr.mapper.JavaScriptFrameworkMapper;
 import com.etnetera.hr.repository.JavaScriptFrameworkRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,17 @@ public class JavaScriptFrameworkService {
                 found.add(frameworkMapper.mapToResponseDto(framework))
         );
         return found;
+    }
+
+
+    /**
+     * Scheduled task to delte JavaScriptFrameworks that were archived before 30 days
+     * fixedDelay set to 500 for test purposes only. for real scenario should be changed.
+     */
+    @Scheduled(fixedDelay = 1000)
+    public void deleteArchivedJSFrameworks() {
+        LocalDateTime marginDateTime = LocalDateTime.now().minusSeconds(5);
+        frameworkRepository.deleteAll(frameworkRepository.findAllByArchivedTrueAndModifiedBefore(marginDateTime));
     }
 
 }

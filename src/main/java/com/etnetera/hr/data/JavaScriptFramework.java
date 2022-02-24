@@ -2,6 +2,7 @@ package com.etnetera.hr.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,9 @@ public class JavaScriptFramework {
     private FanaticIrrationalAdmirationLevel hypeLevel;
 
     private boolean archived;
+
+    @LastModifiedDate
+    private LocalDateTime modified;
 
     public JavaScriptFramework() {
     }

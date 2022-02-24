@@ -4,9 +4,9 @@ import com.etnetera.hr.data.FanaticIrrationalAdmirationLevel;
 import com.etnetera.hr.data.JavaScriptFramework;
 import com.etnetera.hr.dto.JSFrameworkRequestDto;
 import com.etnetera.hr.repository.JavaScriptFrameworkRepository;
-import com.etnetera.hr.service.JavaScriptFrameworkService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.awaitility.Duration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.stream.StreamSupport;
 
+import static org.awaitility.Awaitility.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -49,12 +51,15 @@ public class JavaScriptFrameworkTests {
     private MockMvc mockMvc;
     @Autowired
     private JavaScriptFrameworkRepository repository;
-    @Autowired
-    private JavaScriptFrameworkService service;
+
 
     private void prepareData() throws Exception {
         JavaScriptFramework react = new JavaScriptFramework("ReactJS");
+        react.setModified(LocalDateTime.now());
+
         JavaScriptFramework vue = new JavaScriptFramework("Vue.js");
+        vue.setModified(LocalDateTime.now());
+
 
         repository.save(react);
         repository.save(vue);
@@ -216,4 +221,21 @@ public class JavaScriptFrameworkTests {
 
     }
 
+
+    @Test
+    public void testScheduling_whenTimePass_thenDeletsFrameworks() throws Exception {
+      prepareData();
+
+        long countBeforeDelete = StreamSupport.stream(repository.findAll().spliterator(), false).count();
+
+        mockMvc.perform(delete("/frameworks/" + repository.findAll().iterator().next().getId().toString()))
+                .andExpect(status().isNoContent());
+
+        await()
+                .atMost(Duration.TEN_SECONDS)
+                .until(() -> StreamSupport.stream(repository.findAll().spliterator(), false).count() == 1);
+
+        long countAfterDelete = StreamSupport.stream(repository.findAll().spliterator(), false).count();
+        assertEquals( countBeforeDelete-1, countAfterDelete);
+    }
 }
