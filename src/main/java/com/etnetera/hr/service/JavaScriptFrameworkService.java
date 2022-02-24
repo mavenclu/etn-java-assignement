@@ -57,10 +57,10 @@ public class JavaScriptFrameworkService {
 
 
     /**
-     * Scheduled task to delte JavaScriptFrameworks that were archived before 30 days
+     * Scheduled task to delte JavaScriptFrameworks that were archived before 5 seconds, time set for test purposes only
      * fixedDelay set to 500 for test purposes only. for real scenario should be changed.
      */
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 10000)
     public void deleteArchivedJSFrameworks() {
         LocalDateTime marginDateTime = LocalDateTime.now().minusSeconds(5);
         frameworkRepository.deleteAll(frameworkRepository.findAllByArchivedTrueAndModifiedBefore(marginDateTime));
