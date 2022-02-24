@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import java.util.List;
 @Schema(name = "JavascriptFramework")
 public class JSFrameworkRequestDto {
     @Schema(description = "name of the framework")
-    @NotNull(message = "NotEmpty")
     @Size(max = 30, message = "Size")
+    @NotEmpty
     private String name;
     @Schema(name = "version", description = "available versions of the framework")
     private List<Version> versions = new ArrayList<>();
